@@ -1,0 +1,4 @@
+x, identifier
+:=, :=
+5, number
+;, ;
