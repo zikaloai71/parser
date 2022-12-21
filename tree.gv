@@ -3,20 +3,30 @@ graph tree {
 	nodesep="0.5;"
 	{
 		rank=same
-		0 [label=if shape=rectangle]
+		0 [label="assign (z)" shape=rectangle]
+		2 [label=if shape=rectangle]
+		8 [label="assign (x)" shape=rectangle]
 	}
 	{
 		rank=same
-		2 [label="op (==)" shape=""]
-		4 [label="read (x)" shape=rectangle]
+		1 [label="const (5)" shape=""]
+		4 [label="op (==)" shape=""]
+		6 [label="read (x)" shape=rectangle]
+		7 [label="read (y)" shape=rectangle]
+		9 [label="const (5)" shape=""]
 	}
 	{
 		rank=same
-		1 [label="id (x)" shape=""]
-		3 [label="const (5)" shape=""]
+		3 [label="id (x)" shape=""]
+		5 [label="const (5)" shape=""]
 	}
-	2 -- 1
+	0 -- 1
 	0 -- 2
-	2 -- 3
-	0 -- 4
+	4 -- 3
+	2 -- 4
+	4 -- 5
+	2 -- 6
+	6 -- 7
+	2 -- 8
+	8 -- 9
 }

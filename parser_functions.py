@@ -44,52 +44,49 @@ def match(token):
         return 1
 
     showerror(title="token mismatch", message=f'expected "{token}" but found "{tokens[i][1]}"')
+    return -1
     #raise ValueError(f'token mismatch expected "{token}" but found "{tokens[i][1]}"')
 
 
 def program():
+    if tokens[-1][1] not in ";}" : 
+        showerror(title="syntax Error", message=f'error')
+        return -1
     stmt_sequence(-1, 0)
-    print(i,len(tokens))
-    
-    if i < len(tokens):     # for error handling
-        match(';')
     print('compiled successfully')
 
 
 def stmt_sequence(parent, level):
     global i
     global tokens
-    x = statement(parent, level)
-    # match(';')
-    # if i == len(tokens) - 1:
-    #     match(';')
-    # y = x
-    # if i == len(tokens)-1 and tokens[len(tokens) - 1][1] != ';':
-    #     match("statement")
-    # print(len(tokens)-1)
-    # print(i)
-    # and tokens[i][1] == ';'
-    while i < len(tokens)-1 and tokens[i][1] == ';':
-        print(tokens[i+1][1])
-        if tokens[i+1][1] == "}":
-            match(';')
-            return 
-        # if i == len(tokens) - 1:
 
-        #     # match(";")
-        #     return y
-        match(';')
-        x = statement(x, level)
-        # parent = x
-        # match(';')
-    # match(';')
-    # return y
+    # if tokens[-1][1] not in ";}" : 
+    #     showerror(title="syntax Error", message=f'error')
+    #     return
+
+    x = statement(parent, level)
+
+    while i < len(tokens)-1 :
+        print(tokens[i+1][1])
+        if tokens[i][1] == ';' and tokens[i+1][1] == "}" :
+                match(';')
+                return 
+        elif tokens[i][1] != ";" and tokens[i+1][1] == "}" :
+               match(';')
+       
+        else:
+             if tokens[i-1][1] != "}":
+                match(";")
+             elif tokens[i][1] == ";" and tokens[i-1][1] == "}":
+                match(";")
+             x = statement(x, level)
 
 
 def statement(parent, level):
     global i
     global tokens
-    if i >= len(tokens):         # for error handling
+    if i >= len(tokens):  
+             # for error handling
         match('statement')
     if tokens[i][1] == 'if':
         return if_stmt(parent, level)
@@ -103,9 +100,7 @@ def statement(parent, level):
         return read_stmt(parent, level)
     elif tokens[i][1] == 'write':
         return write_stmt(parent, level)
-    # elif tokens[i][1] == ';' and i == len(tokens) -1:
-    #     match(";")
-    else:                       # for error handling
+    else:           
         match('statement')
 
 

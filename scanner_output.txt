@@ -1,3 +1,7 @@
+z, identifier
+=, =
+5, number
+;, ;
 if, if
 (, (
 x, identifier
@@ -9,4 +13,9 @@ read, read
 x, identifier
 read, read
 y, identifier
+;, ;
 }, }
+x, identifier
+=, =
+5, number
+;, ;
