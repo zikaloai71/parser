@@ -35,14 +35,8 @@ initial = ''''''
 
 
 reserved_words = [
-    'read',
-    'write',
     'if',
-    'then',
     'else',
-    'end',
-    'repeat',
-    'until',
     'while'
 ]
 special_symbols = '+-*/=<>!({)};:'
@@ -84,7 +78,21 @@ def get_token(i):
         while tiny[i].isalpha():
             token+=tiny[i]
             i+=1
-        if token in reserved_words:
+        if token == "cin":
+            if tiny[i] == ">" and tiny[i+1] == ">":
+                token += ">>"
+                token_type = token
+                i+=2
+            else:
+                token_type = token
+        elif token == "cout":
+            if tiny[i] == "<" and tiny[i+1] == "<":
+                token += "<<"
+                token_type = token
+                i+=2
+            else:
+                token_type = token
+        elif token in reserved_words:
             token_type = token
         else:
             token_type = 'identifier'
@@ -95,14 +103,6 @@ def get_token(i):
             i+=1
         token_type = 'number'
 
-    # elif tiny[i]==':':
-    #     if tiny[i+1] == '=':
-    #         token = ':='
-    #         i+=2
-    #     else:
-    #         i+=1
-    #         token = ':'
-    #     token_type = token
         
     elif tiny[i] in special_symbols:
         if tiny[i] == "=":

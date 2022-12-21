@@ -67,7 +67,7 @@ def stmt_sequence(parent, level):
     x = statement(parent, level)
 
     while i < len(tokens)-1 :
-        print(tokens[i+1][1])
+        
         if tokens[i][1] == ';' and tokens[i+1][1] == "}" :
                 match(';')
                 return 
@@ -96,10 +96,10 @@ def statement(parent, level):
         return while_stmt(parent, level)
     elif tokens[i][1] == 'identifier':
         return assign_stmt(parent, level)
-    elif tokens[i][1] == 'read':
-        return read_stmt(parent, level)
-    elif tokens[i][1] == 'write':
-        return write_stmt(parent, level)
+    elif tokens[i][1] == 'cin>>':
+        return cin_stmt(parent, level)
+    elif tokens[i][1] == 'cout<<':
+        return cout_stmt(parent, level)
     else:           
         match('statement')
 
@@ -169,21 +169,21 @@ def assign_stmt(parent, level):
     return x
 
 
-def read_stmt(parent, level):
+def cin_stmt(parent, level):
     global i
     global tokens
-    match('read')
-    nodes.append(Node(parent, level, f'read ({tokens[i][0]})', nodes))
+    match('cin>>')
+    nodes.append(Node(parent, level, f'cin>> ({tokens[i][0]})', nodes))
     match('identifier')
     x = len(nodes) - 1
     return x
 
 
-def write_stmt(parent, level):
+def cout_stmt(parent, level):
     global i
     global tokens
-    match('write')
-    nodes.append(Node(parent, level, 'write', nodes))
+    match('cout<<')
+    nodes.append(Node(parent, level, 'cout<<', nodes))
     x = len(nodes) - 1
     exp(x, level + 1)
     return x
