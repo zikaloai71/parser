@@ -1,3 +1,12 @@
+if, if
+(, (
 x, identifier
-=, =
-3, number
+==, ==
+5, number
+), )
+{, {
+read, read
+x, identifier
+read, read
+y, identifier
+}, }

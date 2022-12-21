@@ -48,8 +48,9 @@ def match(token):
 
 
 def program():
-    print(tokens)
     stmt_sequence(-1, 0)
+    print(i,len(tokens))
+    
     if i < len(tokens):     # for error handling
         match(';')
     print('compiled successfully')
@@ -68,10 +69,13 @@ def stmt_sequence(parent, level):
     # print(len(tokens)-1)
     # print(i)
     # and tokens[i][1] == ';'
-    while i < len(tokens) and tokens[i][1] == ';':
-        print(i)
-        print(tokens)
+    while i < len(tokens)-1 and tokens[i][1] == ';':
+        print(tokens[i+1][1])
+        if tokens[i+1][1] == "}":
+            match(';')
+            return 
         # if i == len(tokens) - 1:
+
         #     # match(";")
         #     return y
         match(';')
