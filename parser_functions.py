@@ -86,12 +86,9 @@ def statement(parent, level):
     global i
     global tokens
     if i >= len(tokens):  
-             # for error handling
         match('statement')
     if tokens[i][1] == 'if':
         return if_stmt(parent, level)
-    # elif tokens[i][1] == 'repeat':
-    #     return repeat_stmt(parent, level)
     elif tokens[i][1] == 'while':
         return while_stmt(parent, level)
     elif tokens[i][1] == 'identifier':
@@ -100,6 +97,8 @@ def statement(parent, level):
         return cin_stmt(parent, level)
     elif tokens[i][1] == 'cout<<':
         return cout_stmt(parent, level)
+    elif tokens[i][1] == 'for':
+        return for_stmt(parent, level)
     else:           
         match('statement')
 
@@ -118,7 +117,6 @@ def if_stmt(parent, level):
     # match('then')
     stmt_sequence(x, level)
     match('}')
-    # if i < len(tokens) and tokens[i][1] == 'else':
     if i < len(tokens) and tokens[i][1] == 'else':
         nodes.append(Node(x, level, 'else', nodes))
         y = len(nodes) - 1
@@ -126,21 +124,29 @@ def if_stmt(parent, level):
         match('{')
         stmt_sequence(y, level-1)
         match('}')
-    # match('end')
     return x
 
 
-# def repeat_stmt(parent, level):
-#     global i
-#     global tokens
-#     nodes.append(Node(parent, level, 'repeat', nodes))
-#     level += 1
-#     match('repeat')
-#     x = len(nodes) - 1
-#     stmt_sequence(x, level)
-#     match('until')
-#     exp(x, level)
-#     return x
+def for_stmt(parent, level):
+    global i
+    global tokens
+    nodes.append(Node(parent, level, 'for', nodes))
+    level += 1
+    match('for')
+    match("(")
+    x = len(nodes) - 1
+    if i < len(tokens) and tokens[i][1] != ";":
+        assign_stmt(x, level)
+    match(";")
+    exp(x, level)
+    match(";")
+    if i < len(tokens) and tokens[i][1] != ")":
+        assign_stmt(x, level)
+    match(")")
+    match("{")
+    stmt_sequence(x, level)
+    match('}')
+    return x
 
 def while_stmt(parent, level):
     global i

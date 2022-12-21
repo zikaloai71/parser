@@ -37,7 +37,9 @@ initial = ''''''
 reserved_words = [
     'if',
     'else',
-    'while'
+    'while',
+    'programs',
+    'for'
 ]
 special_symbols = '+-*/=<>!({)};:'
 tiny=''
