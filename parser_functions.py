@@ -37,14 +37,18 @@ def match(token):
     if i >= len(tokens):
         showerror(title="syntax Error", message=f'expected "{token}" but found nothing')
         #raise ValueError(f'syntax Error expected "{token}" but found nothing')
+    # if tokens[i][1] == ";" and i == len(tokens) - 1:
+    #     return 1
     if tokens[i][1] == token:
         i += 1
         return 1
+
     showerror(title="token mismatch", message=f'expected "{token}" but found "{tokens[i][1]}"')
     #raise ValueError(f'token mismatch expected "{token}" but found "{tokens[i][1]}"')
 
 
 def program():
+    print(tokens)
     stmt_sequence(-1, 0)
     if i < len(tokens):     # for error handling
         match(';')
@@ -55,11 +59,27 @@ def stmt_sequence(parent, level):
     global i
     global tokens
     x = statement(parent, level)
-    y = x
+    # match(';')
+    # if i == len(tokens) - 1:
+    #     match(';')
+    # y = x
+    # if i == len(tokens)-1 and tokens[len(tokens) - 1][1] != ';':
+    #     match("statement")
+    # print(len(tokens)-1)
+    # print(i)
+    # and tokens[i][1] == ';'
     while i < len(tokens) and tokens[i][1] == ';':
+        print(i)
+        print(tokens)
+        # if i == len(tokens) - 1:
+        #     # match(";")
+        #     return y
         match(';')
         x = statement(x, level)
-    return y
+        # parent = x
+        # match(';')
+    # match(';')
+    # return y
 
 
 def statement(parent, level):
@@ -69,14 +89,18 @@ def statement(parent, level):
         match('statement')
     if tokens[i][1] == 'if':
         return if_stmt(parent, level)
-    elif tokens[i][1] == 'repeat':
-        return repeat_stmt(parent, level)
+    # elif tokens[i][1] == 'repeat':
+    #     return repeat_stmt(parent, level)
+    elif tokens[i][1] == 'while':
+        return while_stmt(parent, level)
     elif tokens[i][1] == 'identifier':
         return assign_stmt(parent, level)
     elif tokens[i][1] == 'read':
         return read_stmt(parent, level)
     elif tokens[i][1] == 'write':
         return write_stmt(parent, level)
+    # elif tokens[i][1] == ';' and i == len(tokens) -1:
+    #     match(";")
     else:                       # for error handling
         match('statement')
 
@@ -88,30 +112,52 @@ def if_stmt(parent, level):
     level += 1
     x = len(nodes) - 1
     match('if')
+    match("(")
     exp(x, level)
-    match('then')
+    match(")")
+    match('{')
+    # match('then')
     stmt_sequence(x, level)
+    match('}')
+    # if i < len(tokens) and tokens[i][1] == 'else':
     if i < len(tokens) and tokens[i][1] == 'else':
-        #nodes.append(Node(x, level, 'else', nodes))
-        #y = len(nodes) - 1
+        nodes.append(Node(x, level, 'else', nodes))
+        y = len(nodes) - 1
         match('else')
-        stmt_sequence(x, level)
-    match('end')
+        match('{')
+        stmt_sequence(y, level-1)
+        match('}')
+    # match('end')
     return x
 
 
-def repeat_stmt(parent, level):
+# def repeat_stmt(parent, level):
+#     global i
+#     global tokens
+#     nodes.append(Node(parent, level, 'repeat', nodes))
+#     level += 1
+#     match('repeat')
+#     x = len(nodes) - 1
+#     stmt_sequence(x, level)
+#     match('until')
+#     exp(x, level)
+#     return x
+
+def while_stmt(parent, level):
     global i
     global tokens
-    nodes.append(Node(parent, level, 'repeat', nodes))
+    nodes.append(Node(parent, level, 'while', nodes))
     level += 1
-    match('repeat')
+    match('while')
+    match("(")
     x = len(nodes) - 1
-    stmt_sequence(x, level)
-    match('until')
     exp(x, level)
+    match(")")
+    match("{")
+    stmt_sequence(x, level)
+    match('}')
+    # exp(x, level)
     return x
-
 
 def assign_stmt(parent, level):
     global i
@@ -119,7 +165,7 @@ def assign_stmt(parent, level):
     nodes.append(Node(parent, level, f'assign ({tokens[i][0]})', nodes))
     x = len(nodes) - 1
     match('identifier')
-    match(':=')
+    match('=')
     exp(x, level + 1)
     return x
 
@@ -148,8 +194,9 @@ def exp(parent, level):
     global i
     global tokens
     x = simple_exp(parent, level)
-    if i < len(tokens) and (tokens[i][1] == '<' or tokens[i][1] == '='):
-        nodes.append(Node(parent, level, f'op ({tokens[i][0]})', nodes))
+    # op = tokens[i][1]
+    if i < len(tokens) and (tokens[i][1] == '<' or tokens[i][1] == '==' or tokens[i][1] == '>' or tokens[i][1] == '!' or tokens[i][1] == '<=' or tokens[i][1] == '>=' or tokens[i][1] == '!='):
+        nodes.append(Node(parent, level, f'op ({tokens[i][1]})', nodes))
         nodes[x].chg_parent(len(nodes) - 1)
         nodes[x].inc_level()
         x = len(nodes) - 1
@@ -201,17 +248,26 @@ def mulop():
 def factor(parent, level):
     global i
     global tokens
-    if tokens[i][1] == '(':
-        match('(')
-        x = exp(parent, level)
-        match(')')
-        return x
+    # match('(')
+    # x = exp(parent, level)
+    # match(')')
+    if tokens[i][1] == 'identifier':
+        nodes.append(Node(parent, level, f'id ({tokens[i][0]})', nodes))
+        match('identifier')
     elif tokens[i][1] == 'number':
         nodes.append(Node(parent, level, f'const ({tokens[i][0]})', nodes))
         match('number')
-    elif tokens[i][1] == 'identifier':
-        nodes.append(Node(parent, level, f'id ({tokens[i][0]})', nodes))
-        match('identifier')
+    # if tokens[i][1] == '(':
+    #     match('(')
+    #     x = exp(parent, level)
+    #     match(')')
+    #     return x
+    # elif tokens[i][1] == 'number':
+    #     nodes.append(Node(parent, level, f'const ({tokens[i][0]})', nodes))
+    #     match('number')
+    # elif tokens[i][1] == 'identifier':
+    #     nodes.append(Node(parent, level, f'id ({tokens[i][0]})', nodes))
+    #     match('identifier')
     return len(nodes) - 1
 
 

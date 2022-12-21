@@ -1,3 +1,14 @@
+"""
+this program is written by Abdullah Ali & Alaadin
+
+and updated by:
+    Mohamed Twfik 
+    Mohamed Gad 
+    Zakaria Loai 
+    Hussien Wefky 
+    Rabeh Rabie
+"""
+
 from tkinter import *
 import tkinter.filedialog
 from tkinter.filedialog import askopenfilename
@@ -9,7 +20,7 @@ os.environ["PATH"] += os.pathsep + os.getcwd() + '/inc'
 
 root = Tk()
 root.title("Tiny Scanner & Parser")
-
+# root.iconbitmap('inc/icon.ico')
 #root.geometry("500x500")
 root.resizable(width=True,height=True)
 img = PhotoImage(file="inc/btn.png") ##import
@@ -31,9 +42,10 @@ reserved_words = [
     'else',
     'end',
     'repeat',
-    'until'
+    'until',
+    'while'
 ]
-special_symbols = '+-*/=<();:'
+special_symbols = '+-*/=<>!({)};:'
 tiny=''
 
 def read_out():
@@ -56,9 +68,9 @@ def ask_open_file(event):
 def get_token(i):
     token = ''
     token_type =''
-    while tiny[i]=='{' or tiny[i]==' ' or tiny[i] == '\t':
-        if tiny[i]=='{':
-            while (tiny[i]!='}'):
+    while tiny[i]=='/' or tiny[i]==' ' or tiny[i] == '\t':
+        if tiny[i]=='/' and tiny[i+1]=='/':
+            while (tiny[i]!='\n'):
                 i+=1
             i+=1
 
@@ -83,19 +95,44 @@ def get_token(i):
             i+=1
         token_type = 'number'
 
-    elif tiny[i]==':':
-        if tiny[i+1] == '=':
-            token = ':='
-            i+=2
-        else:
-            i+=1
-            token = ':'
-        token_type = token
+    # elif tiny[i]==':':
+    #     if tiny[i+1] == '=':
+    #         token = ':='
+    #         i+=2
+    #     else:
+    #         i+=1
+    #         token = ':'
+    #     token_type = token
         
     elif tiny[i] in special_symbols:
-        token = tiny[i]
-        i+=1
-        token_type=token
+        if tiny[i] == "=":
+            if tiny[i+1] == "=":
+                token = "=="
+                i+=2
+                token_type=token
+            else:
+                token = "="
+                i+=1
+                token_type=token
+        elif tiny[i] == "!" and tiny[i+1] == "=":
+            token = "!="
+            i+=2
+            token_type=token
+        elif tiny[i] == ">" and tiny[i+1] == "=":
+            token = ">="
+            i+=2
+            token_type=token
+        elif tiny[i] == "<" and tiny[i+1] == "=":
+            token = "<="
+            i+=2
+            token_type=token
+        elif tiny[i] == ";" and i == len(tiny)-1:
+            token = tiny[i]
+            token_type=token
+        else:
+            token = tiny[i]
+            i+=1
+            token_type=token
     else:
         token_type="error"
         while (tiny[i]!=' '):
@@ -126,7 +163,7 @@ def read_Entry(event):
         read_out()##get_output_file
         # ==== parser time =====
         text = '\n'.join(output)
-        tokens = [i.split(', ') for i in text.strip().split('\n')]
+        tokens = [i.split(', ') for i in text.strip().split('\n')]    # explain
         i = 0
         nodes = []
         parser_functions.tokens = tokens 
