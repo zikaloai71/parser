@@ -10,7 +10,6 @@ and updated by:
 """
 
 from tkinter import *
-import tkinter.filedialog
 from tkinter.filedialog import askopenfilename
 import parser_functions
 from parser_functions import *
@@ -20,14 +19,9 @@ os.environ["PATH"] += os.pathsep + os.getcwd() + '/inc'
 
 root = Tk()
 root.title("Tiny Scanner & Parser")
-# root.iconbitmap('inc/icon.ico')
-#root.geometry("500x500")
 root.resizable(width=True,height=True)
 img = PhotoImage(file="inc/btn.png") ##import
-##img = img.zoom(3)
-##img = img.subsample(12)
 cnv = PhotoImage(file="inc/convert.png")
-##cnv = cnv.subsample(5)
 output_file = 'scanner_output.txt'
 
 initial = ''''''
@@ -172,7 +166,8 @@ def read_Entry(event):
         parser_functions.i = i
         parser_functions.nodes = nodes
         program()
-        draw(parser_functions.nodes)
+        parser_functions.draw(parser_functions.nodes)
+        
         # ======================
     
 def changeCursor(event):

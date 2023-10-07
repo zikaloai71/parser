@@ -1,9 +1,9 @@
-#import inspect
+
 from graphviz import Graph
 from collections import defaultdict
-from tkinter.messagebox import showerror
-#inspect.getouterframes(inspect.currentframe(), 2)[1][3]
 
+
+import tkinter.messagebox as messagebox
 
 class Node:
     def __init__(self, parent, level, text, nodes):
@@ -35,22 +35,21 @@ def match(token):
     global i
     global tokens
     if i >= len(tokens):
-        showerror(title="syntax Error", message=f'expected "{token}" but found nothing')
-        #raise ValueError(f'syntax Error expected "{token}" but found nothing')
-    # if tokens[i][1] == ";" and i == len(tokens) - 1:
-    #     return 1
+        messagebox.showerror(title="syntax Error", message=f'expected "{token}" but found nothing')
+
     if tokens[i][1] == token:
         i += 1
         return 1
 
-    showerror(title="token mismatch", message=f'expected "{token}" but found "{tokens[i][1]}"')
+    messagebox.showerror(title="token mismatch", message=f'expected "{token}" but found "{tokens[i][1]}"')
+    
     return -1
-    #raise ValueError(f'token mismatch expected "{token}" but found "{tokens[i][1]}"')
+   
 
 
 def program():
     if tokens[-1][1] not in ";}" : 
-        showerror(title="syntax Error", message=f'error')
+        messagebox.showerror(title="syntax Error", message=f'error')
         return -1
     stmt_sequence(-1, 0)
     print('compiled successfully')
@@ -59,10 +58,6 @@ def program():
 def stmt_sequence(parent, level):
     global i
     global tokens
-
-    # if tokens[-1][1] not in ";}" : 
-    #     showerror(title="syntax Error", message=f'error')
-    #     return
 
     x = statement(parent, level)
 
@@ -114,7 +109,6 @@ def if_stmt(parent, level):
     exp(x, level)
     match(")")
     match('{')
-    # match('then')
     stmt_sequence(x, level)
     match('}')
     if i < len(tokens) and tokens[i][1] == 'else':
@@ -253,26 +247,14 @@ def mulop():
 def factor(parent, level):
     global i
     global tokens
-    # match('(')
-    # x = exp(parent, level)
-    # match(')')
+
     if tokens[i][1] == 'identifier':
         nodes.append(Node(parent, level, f'id ({tokens[i][0]})', nodes))
         match('identifier')
     elif tokens[i][1] == 'number':
         nodes.append(Node(parent, level, f'const ({tokens[i][0]})', nodes))
         match('number')
-    # if tokens[i][1] == '(':
-    #     match('(')
-    #     x = exp(parent, level)
-    #     match(')')
-    #     return x
-    # elif tokens[i][1] == 'number':
-    #     nodes.append(Node(parent, level, f'const ({tokens[i][0]})', nodes))
-    #     match('number')
-    # elif tokens[i][1] == 'identifier':
-    #     nodes.append(Node(parent, level, f'id ({tokens[i][0]})', nodes))
-    #     match('identifier')
+  
     return len(nodes) - 1
 
 
@@ -292,9 +274,7 @@ def draw(nodes):
     g.attr(ordering="out")
     g.attr(nodesep='0.5;')
     for level, node_list in sorted(nodes_clustered.items()):
-        # print(level)
-        # for node in node_list:
-        #     print(node)
+      
         with g.subgraph() as s:
             s.attr(rank='same')
             for data in node_list: s.node(str(data[0]), data[1].text,shape=get_shape(data[1].text))
